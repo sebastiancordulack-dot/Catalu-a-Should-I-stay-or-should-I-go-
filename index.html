@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cataluña: ¿Should I stay or should I go?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    /* ── Custom Properties ── */
+    :root {
+      --bg:      #fffcda;
+      --text:    #000000;
+      --light:   rgba(0,0,0,0.48);
+      --hr:      rgba(0,0,0,0.18);
+      --surface: #f0ecca;
+      --accent:  #8b1a1a;
+      --display: 'Anton', sans-serif;
+      --body:    'DM Sans', sans-serif;
+      --gutter:  clamp(20px, 5vw, 72px);
+      --prose:   700px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; font-size: 16px; }
+    body { background: var(--bg); color: var(--text); font-family: var(--body); font-weight: 300; line-height: 1.6; overflow-x: hidden; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* ── Nav ── */
+    .nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--bg);
+      border-bottom: 1px solid var(--hr);
+      padding: 0 var(--gutter);
+      display: flex; align-items: center; justify-content: space-between;
+      height: 48px;
+      font-size: 0.67rem; letter-spacing: 0.05em;
+    }
+    .nav-brand { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%; }
+    .nav-links { display: flex; gap: 1.75rem; list-style: none; flex-shrink: 0; }
+    .nav-links a { transition: opacity 0.2s; }
+    .nav-links a:hover,
+    .nav-links a.active { opacity: 0.4; }
+    @media (max-width: 800px) { .nav-links { display: none; } .nav-brand { max-width: 100%; } }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 88vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 4rem var(--gutter) 0;
+      border-bottom: 1px solid var(--hr);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 30%;
+      display: block;
+    }
+    /* gradient: image shows at top, fades to cream at bottom so red text stays readable */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(
+        to bottom,
+        rgba(255,252,218,0.05) 0%,
+        rgba(255,252,218,0.15) 35%,
+        rgba(255,252,218,0.72) 58%,
+        rgba(255,252,218,0.96) 75%,
+        rgba(255,252,218,1)    100%
+      );
+    }
+    /* all hero text content sits above the gradient */
+    .hero > *:not(.hero-bg) { position: relative; z-index: 2; }
+    .hero-eyebrow {
+      font-size: 0.67rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--light); margin-bottom: 1.25rem;
+    }
+    .hero-title {
+      font-family: var(--display);
+      font-size: clamp(72px, 15vw, 200px);
+      color: var(--accent);
+      line-height: 0.88; letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-subtitle {
+      font-size: clamp(1.15rem, 2.5vw, 1.8rem);
+      font-weight: 300; font-style: italic;
+      max-width: 640px; margin-bottom: 3rem;
+    }
+    .hero-footer {
+      border-top: 1px solid var(--hr);
+      padding: 1.5rem 0;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      font-size: 0.68rem; color: var(--light);
+    }
+    .hero-authors { line-height: 1.9; }
+    .hero-meta { text-align: right; line-height: 1.9; }
+
+    /* ── Section shell ── */
+    .section {
+      padding: 5rem var(--gutter);
+      border-bottom: 1px solid var(--hr);
+    }
+    .section-inner { max-width: var(--prose); }
+    .section-inner--wide { max-width: 1100px; }
+
+    /* Section label + title */
+    .label {
+      display: block;
+      font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--light); margin-bottom: 0.4rem;
+    }
+    .title {
+      font-family: var(--body); font-weight: 400;
+      font-size: clamp(1.75rem, 3.8vw, 2.8rem);
+      color: var(--accent); line-height: 1.05;
+      margin-bottom: 2.25rem;
+    }
+    .subtitle {
+      font-size: clamp(0.85rem, 1.4vw, 1rem);
+      font-style: italic; color: var(--light);
+      margin-top: -1.75rem; margin-bottom: 2.25rem;
+      line-height: 1.55;
+    }
+
+    /* Body text */
+    p {
+      font-size: clamp(0.88rem, 1.35vw, 1.02rem);
+      line-height: 1.78; color: var(--text);
+    }
+    p + p { margin-top: 1.1rem; }
+
+    /* ── Pull quote ── */
+    .pull {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 0 0.75rem 1.75rem;
+      margin: 2.25rem 0;
+    }
+    .pull p {
+      font-size: clamp(0.95rem, 1.7vw, 1.2rem);
+      font-style: italic; line-height: 1.62;
+    }
+
+    /* ── Highlight box ── */
+    .box {
+      background: var(--surface);
+      border-left: 3px solid var(--accent);
+      padding: 1.1rem 1.4rem;
+      margin: 2rem 0;
+      font-size: clamp(0.82rem, 1.2vw, 0.94rem);
+      line-height: 1.7;
+    }
+
+    /* ── HR ── */
+    .hr { border: none; border-top: 1px solid var(--hr); margin: 2.25rem 0; }
+
+    /* ── Images ── */
+    .img-frame { overflow: hidden; background: var(--surface); }
+    .img-frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .img-frame:hover img { transform: scale(1.025); }
+    .img-caption {
+      font-size: 0.62rem; color: var(--light);
+      margin-top: 0.5rem; line-height: 1.45; font-style: italic;
+    }
+
+    .img-full   { aspect-ratio: 16/7; margin: 2.25rem 0; }
+    .img-wide   { aspect-ratio: 16/9; margin: 2.25rem 0; }
+    .img-land   { aspect-ratio: 4/3;  margin: 2.25rem 0; }
+    .img-news   { aspect-ratio: 16/10; margin: 0; }
+
+    /* ── Big number callout ── */
+    .big-callout {
+      display: flex; align-items: center; gap: 2rem;
+      padding: 1.5rem 0; margin: 2.25rem 0;
+      border-top: 1px solid var(--hr); border-bottom: 1px solid var(--hr);
+    }
+    .big-num {
+      font-family: var(--display);
+      font-size: clamp(3.5rem, 9vw, 6rem);
+      color: var(--accent); line-height: 1; flex-shrink: 0;
+    }
+    .big-text { font-size: clamp(0.88rem, 1.4vw, 1rem); line-height: 1.65; }
+
+    /* ── Context stats grid ── */
+    .stats-3 {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--hr);
+      margin: 2.25rem 0;
+    }
+    .stat-cell {
+      background: var(--bg); padding: 1.75rem 1.4rem;
+    }
+    .stat-n {
+      font-family: var(--display);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: var(--accent); display: block; margin-bottom: 0.5rem;
+    }
+    .stat-t { font-size: 0.78rem; line-height: 1.55; color: var(--text); }
+
+    /* ── Balcony split ── */
+    .split-2 {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--hr);
+      margin: 2.25rem 0;
+    }
+    .split-cell { background: var(--bg); overflow: hidden; }
+    .split-label {
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--light); padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--hr);
+    }
+    .split-img { aspect-ratio: 4/3; overflow: hidden; }
+    .split-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .split-cell:hover .split-img img { transform: scale(1.03); }
+
+    /* ── Celebrity cards ── */
+    .celeb-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--hr);
+      margin: 2.25rem 0;
+    }
+    .celeb-col { background: var(--bg); padding: 2rem 1.75rem; }
+    .celeb-col--alt { background: var(--surface); }
+    .celeb-side-label {
+      font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--light); display: block; margin-bottom: 1.5rem;
+    }
+    .celeb-item { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--hr); }
+    .celeb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .celeb-img-wrap { aspect-ratio: 16/10; overflow: hidden; margin-bottom: 1rem; background: var(--surface); }
+    .celeb-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
+    .celeb-name  { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.2rem; }
+    .celeb-role  { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--light); margin-bottom: 0.75rem; }
+    .celeb-quote { font-size: 0.8rem; font-style: italic; line-height: 1.6; }
+
+    /* ── VOX section ── */
+    .vox-layout { display: grid; grid-template-columns: 3fr 2fr; gap: 3rem; align-items: start; margin-bottom: 2.25rem; }
+    .vox-logo-wrap {
+      display: flex; align-items: center; justify-content: center;
+      padding: 2.5rem; border: 1px solid var(--hr); background: #fff;
+    }
+    .vox-logo-wrap img { width: 140px; height: auto; }
+
+    /* VOX stats (CSS rebuild of image13) */
+    .vox-stats {
+      border: 1px solid var(--hr); background: var(--surface);
+      padding: 1.75rem; margin: 2.25rem 0;
+    }
+    .vox-stats-title {
+      font-size: 0.78rem; font-weight: 500; margin-bottom: 1.5rem;
+    }
+    .vox-stat-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--hr); margin-bottom: 1.25rem;
+    }
+    .vox-stat-cell { background: var(--bg); padding: 1.25rem; text-align: center; }
+    .vox-stat-num {
+      font-family: var(--display);
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      color: var(--accent); display: block; margin-bottom: 0.35rem; line-height: 1;
+    }
+    .vox-stat-lbl { font-size: 0.57rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--light); line-height: 1.4; }
+    .vox-stat-note { font-size: 0.72rem; color: var(--light); line-height: 1.65; }
+
+    /* ── Memes section ── */
+    .meme-layout { display: grid; grid-template-columns: 3fr 2fr; gap: 3rem; align-items: center; margin: 2.25rem 0; }
+    .pela-wrap { display: flex; justify-content: center; }
+    .pela-img { max-width: 280px; width: 100%; }
+
+    /* ── Desinfle comparison ── */
+    .then-now {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--hr);
+      margin: 2.25rem 0;
+    }
+    .then-cell { background: var(--bg); }
+    .then-label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--light); padding: 0.75rem 1rem; border-bottom: 1px solid var(--hr); }
+    .then-big { font-family: var(--display); font-size: clamp(2.5rem, 7vw, 4.5rem); color: var(--accent); padding: 1rem 1rem 0.25rem; line-height: 1; }
+    .then-desc { font-size: 0.75rem; color: var(--light); padding: 0 1rem 1.25rem; line-height: 1.5; }
+    .then-img { aspect-ratio: 4/3; overflow: hidden; }
+    .then-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ── Conclusion ── */
+    .conclusion {
+      padding: 5rem var(--gutter);
+      border-bottom: 1px solid var(--hr);
+    }
+    .conclusion-inner {
+      max-width: 700px; margin: 0 auto; text-align: center;
+    }
+    .conclusion .title { text-align: center; }
+    .conclusion p { max-width: none; }
+    .conclusion .pull { text-align: left; }
+    .closing {
+      margin-top: 3rem; padding-top: 2rem;
+      border-top: 1px solid var(--hr);
+      font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+      font-style: italic; color: var(--light); line-height: 1.75;
+    }
+
+    /* ── Authors ── */
+    .authors {
+      padding: 2.75rem var(--gutter);
+      border-bottom: 1px solid var(--hr);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .authors-label { font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--light); margin-bottom: 0.6rem; }
+    .authors-names { font-size: 0.82rem; line-height: 1.85; }
+    .authors-right { font-size: 0.68rem; color: var(--light); text-align: right; line-height: 1.8; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 1.75rem var(--gutter);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-mark { font-family: var(--display); font-size: 1.6rem; color: var(--accent); }
+    .footer-copy { font-size: 0.6rem; color: var(--light); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .stats-3, .split-2, .celeb-grid, .vox-layout,
+      .meme-layout, .then-now, .authors { grid-template-columns: 1fr; }
+      .vox-stat-row { grid-template-columns: repeat(3, 1fr); }
+      .big-callout { flex-direction: column; gap: 0.5rem; }
+      .authors { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+      .authors-right { text-align: left; }
+      .pela-img { max-width: 220px; }
+    }
+    @media (max-width: 480px) {
+      .hero-title { font-size: clamp(60px, 18vw, 90px); }
+      .vox-stat-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── Clickable image / play badge ── */
+    .celeb-img-link {
+      display: block;
+      position: relative;
+      cursor: pointer;
+    }
+    .celeb-img-link img { transition: opacity 0.2s ease; }
+    .celeb-img-link:hover img { opacity: 0.88; }
+
+    .img-link-wrap {
+      display: block;
+      position: relative;
+      cursor: pointer;
+    }
+    .img-link-wrap:hover .img-frame img { transform: scale(1.025); }
+
+    .play-badge {
+      position: absolute;
+      bottom: 10px; right: 10px;
+      background: rgba(0,0,0,0.72);
+      color: #fff;
+      font-size: 0.75rem;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      padding-left: 2px;
+      transition: background 0.2s, transform 0.2s;
+      pointer-events: none;
+    }
+    .celeb-img-link:hover .play-badge,
+    .img-link-wrap:hover .play-badge { background: var(--accent); transform: scale(1.1); }
+
+    .play-badge--large {
+      width: 52px; height: 52px;
+      font-size: 1rem;
+      bottom: 14px; right: 14px;
+    }
+
+    /* ── Motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .img-frame:hover img,
+      .split-cell:hover .split-img img { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" aria-label="Navegación principal">
+    <span class="nav-brand">Cataluña: ¿Should I stay or should I go?</span>
+    <ul class="nav-links">
+      <li><a href="#intro">Intro</a></li>
+      <li><a href="#contexto">Contexto</a></li>
+      <li><a href="#balcones">Balcones</a></li>
+      <li><a href="#famosos">Famosos</a></li>
+      <li><a href="#vox">VOX</a></li>
+      <li><a href="#memes">Memes</a></li>
+      <li><a href="#desinfle">El desinfle</a></li>
+      <li><a href="#conclusion">Conclusión</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-bg" src="images/pc-140911-catlan-independence-01.webp" alt="" aria-hidden="true" loading="eager" />
+      <p class="hero-eyebrow">BU Madrid Study Abroad &nbsp;—&nbsp; CAS PO 249: Contemporary Spain</p>
+      <h1 class="hero-title" id="hero-title">Cataluña</h1>
+      <p class="hero-subtitle">¿Should I stay or should I go?</p>
+      <div class="hero-footer">
+        <div class="hero-authors">
+          Sebastian Cordulack &nbsp;·&nbsp; Letty Galperin<br>
+          Gabriel Castro &nbsp;·&nbsp; Wil Nazario
+        </div>
+        <div class="hero-meta">
+          BU Madrid Study Abroad<br>
+          May 10, 2026
+        </div>
+      </div>
+    </section>
+
+    <!-- INTRODUCCIÓN -->
+    <section class="section" id="intro" aria-labelledby="intro-title">
+      <div class="section-inner">
+        <span class="label">Introducción</span>
+        <h2 class="title" id="intro-title">El día que Cataluña fue<br>independiente por 8 segundos</h2>
+
+        <p>El 27 de octubre de 2017, el president Carles Puigdemont salió ante el Parlament y declaró la independencia de Cataluña. Ocho segundos después, la suspendió. En internet ya circula como meme: una multitud eufórica con esteladas, y al lado, esa misma multitud con cara de "¿qué acaba de pasar?". Esa imagen, mejor que cualquier ensayo, resume el <em>procés</em>: una mezcla de drama, ilusión, confusión y un final bastante anticlimático.</p>
+
+        <div class="big-callout">
+          <span class="big-num">8″</span>
+          <p class="big-text">El tiempo que duró la independencia de Cataluña el 27-O antes de que Puigdemont la suspendiera — suficiente para generar memes para toda una generación.</p>
+        </div>
+
+        <figure>
+          <div class="img-frame img-full">
+            <img src="images/image1.png" alt="Multitud eufórica con esteladas a la izquierda, misma multitud confundida a la derecha — el meme de los 8 segundos" loading="eager" />
+          </div>
+          <figcaption class="img-caption">El "meme de los 8 segundos": la euforia y el desconcierto en la misma multitud, minutos después de la declaración suspendida del 27-O.</figcaption>
+        </figure>
+
+        <p>El independentismo catalán no nació en 2017, claro. Es un movimiento con raíces en el siglo XIX que pide un Estado catalán separado de España. Pero estalló como conflicto político serio a partir de 2010, cuando el Tribunal Constitucional recortó el Estatut que los catalanes habían votado en referéndum, y explotó del todo el 1 de octubre de 2017, con un referéndum ilegal en el que ganó el "sí" con cerca del 90% (de los 2,3 millones que fueron a votar).</p>
+
+        <div class="pull">
+          <p>Esta es la historia de cómo un conflicto que llegó a partir España en dos hoy es, sobre todo, un recuerdo incómodo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 1: CONTEXTO -->
+    <section class="section" id="contexto" aria-labelledby="ctx-title">
+      <div class="section-inner">
+        <span class="label">Bloque 1</span>
+        <h2 class="title" id="ctx-title">¿De qué iba todo esto?</h2>
+        <p class="subtitle">Versión sin manual de derecho constitucional</p>
+
+        <p>Para entender el lío hay que saber dos cosas. Primero: España no es un país centralizado al estilo francés. Es el llamado "Estado de las Autonomías", con 17 comunidades que tienen muchísimo poder propio. Cataluña es una de las que más: gestiona su sanidad, su educación (en catalán), tiene su propia policía (los Mossos d'Esquadra), sus cárceles, sus medios públicos. En la práctica, vive bastante en su propio mundo.</p>
+
+        <div class="stats-3">
+          <div class="stat-cell">
+            <span class="stat-n">17</span>
+            <p class="stat-t">Comunidades autónomas con poder legislativo propio. Un modelo descentralizado, muy diferente al estilo francés.</p>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-n">18–19%</span>
+            <p class="stat-t">Del PIB nacional que aporta Cataluña. La segunda comunidad más rica, base del lema <em>"España nos roba".</em></p>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-n">5–8%</span>
+            <p class="stat-t">El déficit fiscal estimado de Cataluña. Expolio para unos, solidaridad interterritorial para otros. Nunca se han puesto de acuerdo.</p>
+          </div>
+        </div>
+
+        <p>El detonante moderno fue la sentencia del Estatut en 2010. Cataluña había aprobado en referéndum un Estatuto de Autonomía con más competencias y con el reconocimiento de Cataluña como "nación". El Tribunal Constitucional lo recortó. Para mucha gente que ni siquiera era independentista, fue como si Madrid les dijera: "vuestro voto no vale". A partir de ahí, el movimiento pasó de pedir más autonomía a pedir la salida directa.</p>
+
+        <div class="box">
+          <strong>El detonante — 2010:</strong> El Tribunal Constitucional recorta el Estatut aprobado por los catalanes en referéndum. Un movimiento que pedía más autonomía se convierte en uno que pide la independencia total.
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 2: BALCONES -->
+    <section class="section" id="balcones" aria-labelledby="balcones-title">
+      <div class="section-inner section-inner--wide">
+        <span class="label">Bloque 2</span>
+        <h2 class="title" id="balcones-title">La guerra de los balcones</h2>
+
+        <p style="max-width: var(--prose);">Si quieres ver un conflicto político no tienes que ir a ningún parlamento. Solo tienes que voltear para arriba. Durante los años más intensos del <em>procés</em>, los balcones de España se convirtieron en pancartas.</p>
+
+        <figure>
+          <div class="split-2">
+            <div class="split-cell">
+              <div class="split-label">Barcelona — Esteladas independentistas</div>
+              <div class="split-img">
+                <img src="images/image4.png" alt="Balcones de Barcelona cubiertos de banderas independentistas (esteladas)" loading="lazy" />
+              </div>
+            </div>
+            <div class="split-cell">
+              <div class="split-label">Madrid — Rojigualdas en respuesta</div>
+              <div class="split-img">
+                <img src="images/image3.png" alt="Balcones de Madrid cubiertos de banderas españolas rojigualdas" loading="lazy" />
+              </div>
+            </div>
+          </div>
+          <figcaption class="img-caption">La guerra de los balcones: esteladas en Barcelona (izquierda) frente a banderas españolas en Madrid (derecha). La política se convirtió en decoración exterior.</figcaption>
+        </figure>
+
+        <p style="max-width: var(--prose);">Antes de 2012, casi nadie en Madrid colgaba la bandera de España en su ventana. Eso era "cosa de fachas". Pero cuando el independentismo catalán empezó a hacerse muy visible, mucha gente respondió sacando la suya. Es lo que algunos sociólogos llaman la <strong>"respuesta espejo"</strong>: cuanto más fuerte se hacía el nacionalismo catalán, más se reactivaba el nacionalismo español. Y al revés.</p>
+
+        <div class="pull" style="max-width: var(--prose);">
+          <p>En las cenas de Navidad de muchas familias mixtas, "mejor no saquemos el tema" se volvió una frase muy oída entre 2017 y 2019. La política dejó de ser algo abstracto y se metió en el salón.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 3: FAMOSOS -->
+    <section class="section" id="famosos" aria-labelledby="famosos-title">
+      <div class="section-inner section-inner--wide">
+        <span class="label">Bloque 3 — Los famosos toman partido</span>
+        <h2 class="title" id="famosos-title">¿Quién está a favor y<br>quién está en contra?</h2>
+        <p class="subtitle">Como cualquier conflicto identitario que se precie, el <em>procés</em> tuvo a sus famosos posicionándose. Declaraciones encendidas, dedicatorias inesperadas y algún que otro arrepentimiento posterior.</p>
+
+        <div class="celeb-grid">
+          <!-- A FAVOR -->
+          <div class="celeb-col">
+            <span class="celeb-side-label">A favor de la independencia</span>
+
+            <div class="celeb-item">
+              <a href="https://www.youtube.com/watch?v=bgiW5Jj88JU" target="_blank" rel="noopener" aria-label="Ver vídeo de Pep Guardiola en YouTube" class="celeb-img-wrap celeb-img-link">
+                <img src="images/image6.png" alt="Pep Guardiola, entrenador del Manchester City, en declaraciones sobre la independencia catalana" loading="lazy" />
+                <span class="play-badge" aria-hidden="true">▶</span>
+              </a>
+              <p class="celeb-name">Pep Guardiola</p>
+              <p class="celeb-role">Entrenador del Manchester City</p>
+              <p class="celeb-quote">El catalán más famoso del planeta dedicó victorias de su equipo a los líderes presos del <em>procés</em> y participó en actos públicos a favor del referéndum. "Para muchos catalanes, fue un orgullo. Para muchos fuera de Cataluña, fue motivo de polémica eterna en los bares deportivos."</p>
+            </div>
+
+            <div class="celeb-item">
+              <a href="https://www.youtube.com/watch?v=c46Ngj2YBZE" target="_blank" rel="noopener" aria-label="Ver vídeo de Juanjo Puigcorbé en YouTube" class="celeb-img-wrap celeb-img-link">
+                <img src="images/image5.png" alt="Juanjo Puigcorbé en Ceres TV declarando que la independencia de Cataluña es un futuro posible, real y único" loading="lazy" />
+                <span class="play-badge" aria-hidden="true">▶</span>
+              </a>
+              <p class="celeb-name">Juanjo Puigcorbé</p>
+              <p class="celeb-role">Actor y concejal de Barcelona</p>
+              <p class="celeb-quote">"La independencia es un futuro posible, real y único." Participó activamente en el movimiento desde el Ayuntamiento de Barcelona, donde llegó a ser concejal.</p>
+            </div>
+          </div>
+
+          <!-- EN CONTRA -->
+          <div class="celeb-col celeb-col--alt">
+            <span class="celeb-side-label">En contra de la independencia</span>
+
+            <div class="celeb-item">
+              <a href="https://www.youtube.com/watch?v=plrJQVzcf3c" target="_blank" rel="noopener" aria-label="Ver vídeo de Joan Manuel Serrat en YouTube" class="celeb-img-wrap celeb-img-link">
+                <img src="images/image8.png" alt="Joan Manuel Serrat en El País declarando que el independentismo está en un callejón sin salida" loading="lazy" />
+                <span class="play-badge" aria-hidden="true">▶</span>
+              </a>
+              <p class="celeb-name">Joan Manuel Serrat</p>
+              <p class="celeb-role">Cantautor — símbolo cultural catalán</p>
+              <p class="celeb-quote">Canta en catalán y en castellano, símbolo antifranquista y patrimonio cultural compartido. Que dijera públicamente que el independentismo estaba "en un callejón sin salida" fue un golpe enorme para el movimiento.</p>
+            </div>
+
+            <div class="pull" style="margin-top:1.5rem;">
+              <p>"No era un señor de Madrid: era uno de los suyos diciéndoles que se estaban equivocando."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 3b: VOX -->
+    <section class="section" id="vox" aria-labelledby="vox-title">
+      <div class="section-inner section-inner--wide">
+        <span class="label">Bloque 3 — El surgimiento de VOX</span>
+        <h2 class="title" id="vox-title">De la irrelevancia<br>al tercer partido</h2>
+
+        <div class="vox-layout">
+          <div>
+            <p>Fundado en 2013 por ex-militantes del PP, Vox fue durante sus primeros años un actor prácticamente invisible en la política española. En las elecciones de 2015 y 2016 obtuvo resultados ínfimos y carecía de representación parlamentaria a cualquier nivel. Para la mayoría de los analistas, parecía condenado a la irrelevancia.</p>
+            <p style="margin-top:1.1rem;"><strong>El Procés fue la gasolina de Vox.</strong> Mientras el PP parecía lento e indeciso, Vox fue el primero en llevar a los líderes independentistas al Tribunal Supremo. El punto de inflexión llegó con la crisis catalana de 2017: la celebración del referéndum unilateral del 1-O y la posterior declaración de independencia crearon un clima de excepcionalidad política que Vox supo capitalizar de forma sistemática.</p>
+          </div>
+          <div>
+            <div class="vox-logo-wrap">
+              <img src="images/image2.png" alt="Logo de VOX — partido político español de extrema derecha" loading="lazy" />
+            </div>
+            <p class="img-caption" style="margin-top:0.5rem; text-align:center;">Fundado en 2013 — de la irrelevancia al tercer partido de España.</p>
+          </div>
+        </div>
+
+        <div class="vox-stats">
+          <p class="vox-stats-title">De la irrelevancia al Congreso: datos clave</p>
+          <div class="vox-stat-row">
+            <div class="vox-stat-cell">
+              <span class="vox-stat-num">&lt;0,2%</span>
+              <span class="vox-stat-lbl">Voto nacional<br>en 2015–16</span>
+            </div>
+            <div class="vox-stat-cell">
+              <span class="vox-stat-num">24</span>
+              <span class="vox-stat-lbl">Escaños en<br>abril 2019</span>
+            </div>
+            <div class="vox-stat-cell">
+              <span class="vox-stat-num">52</span>
+              <span class="vox-stat-lbl">Escaños en<br>noviembre 2019</span>
+            </div>
+          </div>
+          <p class="vox-stat-note">El juicio del Procés (feb.–jun. 2019) funcionó como plataforma mediática de primer orden. Vox ejerció la acusación popular, otorgándole presencia constante en las noticias durante meses.</p>
+        </div>
+
+        <div class="pull">
+          <p>La referencia implícita al lema de Trump <em>"Make America Great Again"</em> no es casual. Al igual que el populismo de derechas anglosajón, Vox apela a una noción de grandeza nacional perdida. En el caso español, Cataluña ocupa un lugar central en ese imaginario.</p>
+        </div>
+
+        <p>Quizás el efecto político más duradero de la irrupción de Vox no sea tanto su propio ascenso electoral como la transformación que ha generado en el conjunto del sistema de partidos. El PP se encontró ante un dilema estratégico: absorber el discurso de Vox o ignorarlo. La evidencia sugiere que el partido optó por un endurecimiento retórico en materia territorial.</p>
+
+        <div class="box">
+          <strong>El resultado:</strong> Una política catalana bloqueada, en la que las posiciones se han polarizado y los incentivos para la moderación se han debilitado en ambos lados del conflicto. La pregunta que queda abierta es si esta dinámica es reversible — o si la polarización se ha convertido en una característica estructural de la política española del siglo XXI.
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 4: MEMES -->
+    <section class="section" id="memes" aria-labelledby="memes-title">
+      <div class="section-inner section-inner--wide">
+        <span class="label">Bloque 4</span>
+        <h2 class="title" id="memes-title">Cuando todo se volvió<br>un chiste (literalmente)</h2>
+
+        <p style="max-width:var(--prose);">Pocas crisis políticas han generado tantos memes, parodias y chistes como el <em>procés</em>. Cuando un conflicto produce más material para guionistas que para juristas, algo dice sobre cómo lo está viviendo la sociedad.</p>
+
+        <div class="meme-layout">
+          <div>
+            <h3 style="font-size:0.75rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--light); margin-bottom:0.9rem;">El barco de los Looney Tunes</h3>
+            <p>En octubre de 2017, el gobierno español necesitaba alojar a miles de policías y guardias civiles enviados a Cataluña para impedir el referéndum. Solución: alquilaron un crucero italiano de la naviera Moby. Pequeño detalle: el barco estaba decorado de arriba abajo con personajes de los Looney Tunes (Piolín, Bugs Bunny, el Pato Lucas).</p>
+            <p style="margin-top:1rem;">Las imágenes del Piolín gigante en el puerto de Barcelona, custodiando a las fuerzas de seguridad enviadas para frenar la independencia, se convirtieron en lo más comentado en redes durante semanas. <strong>El meme se escribió solo.</strong></p>
+            <figure style="margin-top:1.5rem;">
+              <div class="img-frame" style="aspect-ratio:16/9; overflow:hidden;">
+                <img src="images/image7.png" alt="El crucero Moby Dada con personajes de los Looney Tunes decorando su casco, atracado en el puerto de Barcelona" loading="lazy" />
+              </div>
+              <figcaption class="img-caption">El crucero Moby Dada, alquilado por el gobierno para alojar a la Guardia Civil enviada a Barcelona en 2017. Sí, eso de los lados son los Looney Tunes.</figcaption>
+            </figure>
+          </div>
+
+          <div>
+            <h3 style="font-size:0.75rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--light); margin-bottom:0.9rem;">La pela és la pela</h3>
+            <div class="pela-wrap">
+              <img class="pela-img" src="images/image10.png" alt="Gráfico azul con el texto La pela és la pela — meme sobre el argumento económico del independentismo catalán" loading="lazy" />
+            </div>
+            <p style="margin-top:1rem; font-size:0.82rem; color:var(--light); line-height:1.6;">El estereotipo histórico del catalán tacaño, reapropiado durante el <em>procés</em> como argumento económico. Si Cataluña aporta más de lo que recibe, claro que se queja — "la pela és la pela". El chiste se convirtió en consigna.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 5: EL GRAN DESINFLE -->
+    <section class="section" id="desinfle" aria-labelledby="desinfle-title">
+      <div class="section-inner section-inner--wide">
+        <span class="label">Bloque 5</span>
+        <h2 class="title" id="desinfle-title">"El gran desinfle"</h2>
+
+        <p style="max-width:var(--prose);">Aquí viene la parte que casi nadie predijo en 2017: el conflicto se ha desinflado. No ha desaparecido, pero hoy es una sombra de lo que fue. Y la mejor manera de verlo es comparar.</p>
+
+        <figure>
+          <div class="then-now">
+            <div class="then-cell">
+              <div class="then-label">Diada 2014 — El pico del movimiento</div>
+              <div class="then-big">1,5M</div>
+              <p class="then-desc">personas llenaron Barcelona. Banderas, cánticos, mosaicos humanos gigantes. La Diada como acto político masivo.</p>
+              <div class="then-img">
+                <img src="images/image9.png" alt="Manifestación masiva independentista en 2014 con cientos de miles de personas con esteladas" loading="lazy" />
+              </div>
+            </div>
+            <div class="then-cell">
+              <div class="then-label">Diada 2026 — La fatiga del procés</div>
+              <div class="then-big">~400</div>
+              <p class="then-desc">personas en la concentración. Algunas portadas de periódicos catalanes hablan abiertamente de "la fatiga del procés".</p>
+              <div class="then-img">
+                <img src="images/image12.jpg" alt="Pequeña concentración independentista en 2026 con apenas unos cientos de personas" loading="lazy" />
+              </div>
+            </div>
+          </div>
+          <figcaption class="img-caption">Antes y ahora: una manifestación independentista en 2014 (cientos de miles de personas) frente a una concentración reciente en 2026 (apenas unos cientos).</figcaption>
+        </figure>
+
+        <p style="max-width:var(--prose);">¿Qué pasó? Varias cosas a la vez. Los líderes del 2017 acabaron en la cárcel o en el exilio (Puigdemont sigue en Bélgica, aunque la Ley de Amnistía de 2024 le ha facilitado la vuelta). El independentismo se rompió en peleas internas entre ERC, Junts y la CUP, que ya no se ponen de acuerdo ni en el orden del día. Y, por primera vez en una década, las fuerzas independentistas ya no tienen mayoría absoluta en el Parlament: gobierna el socialista Salvador Illa, un señor que va a misa, no se exilia y aburre lo justo.</p>
+
+        <figure style="max-width:var(--prose);">
+          <a href="https://www.youtube.com/watch?v=wa352KXGOyE" target="_blank" rel="noopener" aria-label="Ver vídeo: salida de la Guardia Civil de Barcelona en YouTube" class="img-link-wrap">
+            <div class="img-frame img-wide">
+              <img src="images/image11.png" alt="Vecinos despidiendo entre vítores y banderas españolas a la Guardia Civil al salir de Cataluña tras el referéndum" loading="lazy" />
+            </div>
+            <span class="play-badge play-badge--large" aria-hidden="true">▶</span>
+          </a>
+          <figcaption class="img-caption">Vecinos despidiendo entre vítores y banderas españolas a la Guardia Civil al salir de Cataluña. Un gesto típico de la "respuesta espejo". <span style="color:var(--accent);">Ver vídeo →</span></figcaption>
+        </figure>
+
+        <div class="pull" style="max-width:var(--prose);">
+          <p>El independentismo está más débil, pero la polarización que provocó sigue muy viva. Vox no se ha ido a ningún lado, y cualquier negociación con Cataluña — los indultos de 2021, la amnistía de 2024 — se vive en parte de España como una traición.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CONCLUSIÓN -->
+  <section class="conclusion" id="conclusion" aria-labelledby="conclusion-title">
+    <div class="conclusion-inner">
+      <span class="label" style="display:block; text-align:center;">Conclusión</span>
+      <h2 class="title" id="conclusion-title">¿Y ahora qué?</h2>
+
+      <p>El <em>procés</em> es un caso raro: un movimiento que llegó a partir España en dos y que hoy, sin haber conseguido la independencia, tampoco ha sido derrotado del todo. Ha conseguido cosas importantes — la amnistía, internacionalizar el debate, forzar reformas pendientes — pero ha perdido el aura de cambio histórico inminente.</p>
+
+      <p style="margin-top:1.1rem;">Hoy la conversación en Cataluña va más sobre el nuevo "Pacto Fiscal" que sobre proclamar una república. Aquí en Madrid, lo más habitual es la indiferencia mezclada con cierto rechazo: <em>"déjate de tonterías, que ya está bien"</em>. En las casas catalanas, la gente más joven cuenta que sus padres ya no se enfadan tanto cuando sale el tema en la cena: simplemente cambian de canal.</p>
+
+      <div class="pull">
+        <p>Quizá la lección sea esa: que los conflictos identitarios casi nunca se resuelven con un final hollywoodense. Se desgastan. Se cansan. Se vuelven, de un año para otro, una nota a pie de página.</p>
+      </div>
+
+      <p>El <em>procés</em> pasó de ser el tema central de la política española a ser una historia que algún día, dentro de unos años, contaremos en clase de historia mientras los alumnos miran el móvil. Como tantas otras.</p>
+
+      <p class="closing">Y mientras, los Looney Tunes seguirán nadando por el Mediterráneo en algún ferry, recordándonos que toda crisis política tiene, por suerte o por desgracia, su lado absurdo.</p>
+    </div>
+  </section>
+
+  <!-- AUTHORS -->
+  <section class="authors" aria-label="Autores">
+    <div>
+      <p class="authors-label">Autores</p>
+      <p class="authors-names">
+        Sebastian Cordulack<br>
+        Letty Galperin<br>
+        Gabriel Castro<br>
+        Wil Nazario
+      </p>
+    </div>
+    <div class="authors-right">
+      BU Madrid Study Abroad<br>
+      CAS PO 249: Contemporary Spain:<br>Political and Social Movements in the 21st Century
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-mark" aria-label="Cataluña">Cataluña</span>
+    <p class="footer-copy">&copy; 2026 Cordulack &middot; Galperin &middot; Castro &middot; Nazario</p>
+  </footer>
+
+  <script>
+    // Highlight active nav link based on scroll position
+    const sections = document.querySelectorAll('section[id], .conclusion[id]');
+    const links = document.querySelectorAll('.nav-links a');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        links.forEach(link => {
+          const isActive = link.getAttribute('href') === '#' + entry.target.id;
+          link.classList.toggle('active', isActive);
+          link.style.opacity = isActive ? '1' : '';
+        });
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</body>
+</html>
